@@ -1,14 +1,16 @@
-const fiszki = [
+const arr = [
     {
         id: 1,
         message: "XD"
     },
     {
         id: 2,
+        message: "XD"
     },
     {
-        id: 3, 
+        id: 3,
+        message: "XD" 
     }
 
 ]
-export default fiszki
+export default arr

@@ -1,26 +1,46 @@
-import React, { useState } from 'react'
-import "../App.css"
-import "./array"
+import React, { useState, useEffect, useRef } from 'react';
+import "../App.css";
+import arr from './array';
+
 function Dot({ num }) {
-  let kolor = ""
-  
-  const [click, clickFunc] = useState(0)
-  const [color, zmColor] = useState(kolor)
-  // console.log(tekst2)
+  const [click, setClick] = useState(false);
+  const areaRef = useRef(null);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [elementWidth, setElementWidth] = useState(0);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    setElementWidth(areaRef.current.offsetWidth);
+  }, [click]);
 
   function zmPunkt() {
-    if(click==1) { zmColor("bg-dark"); clickFunc(0); return}
-    if (click == 0) { zmColor("bg-success"); clickFunc(1); return }
-
-
+    setClick(prevClick => !prevClick);
   }
+
+  const dotStyle = {
+    width: elementWidth * arr.length <= windowWidth ? '100%' : `${elementWidth}px`,
+    transform: click ? `translateX(-${elementWidth}px)` : 'translateX(0)',
+    transition: 'transform 0.3s ease-in-out',
+  };
+
   return (
-    
-    div className={`dot ${color}`} onClick={zmPunkt} data-toggle={"popover"} title={"Popover title"} data-content={"And here's some amazing content. It's very engaging. Right?"}>
-      <p>{num}</p>
+    <div className={`dot ${click ? "bg-success" : ""}`} onClick={zmPunkt} ref={areaRef} style={dotStyle}>
+      {arr.map((message, id) => (
+        <div className="dot-item" key={id}>
+          <p>{id}</p>
+        </div>
+      ))}
     </div>
-    <button type={"button"} class={"btn btn-lg btn-danger"} data-toggle={"popover"} title={"Popover title"} data-content={"And here's some amazing content. It's very engaging. Right?"}>1</button>
-  )
+  );
 }
 
-export default Dot
+export default Dot;
